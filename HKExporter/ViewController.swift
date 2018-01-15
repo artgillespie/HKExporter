@@ -14,17 +14,12 @@ class ViewController: UIViewController {
     var store: HKHealthStore!
     
     func getWorkouts() {
-        print("HealthStore: \(store)")
         let type = HKSampleType.workoutType()
-        /*
-        let distance = HKQuantity(unit: HKUnit.mile(), doubleValue: 0.1)
-        let predicate = HKQuery.predicateForWorkouts(with: .greaterThanOrEqualTo, totalDistance: distance)
-        */
         let runningPredicate = HKQuery.predicateForWorkouts(with: .running)
         let dateF = DateFormatter()
         dateF.dateFormat = "yyyy/MM/dd"
+        // date I got my shoes
         let startDate = dateF.date(from: "2017/01/15")
-        print("startDate \(startDate!)")
         let whenPredicate = HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: .strictStartDate)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [runningPredicate, whenPredicate])
         let query = HKSampleQuery(sampleType: type, predicate: predicate, limit: 500, sortDescriptors: nil) { (q, samples, error) in
@@ -32,9 +27,9 @@ class ViewController: UIViewController {
                 print("Error: \(error!)")
                 return
             }
-            print("samples: \(samples!.count)")
             var total = 0.0
             for w in samples! {
+                // TODO: How do you get elevation gain?
                 let workout = w as! HKWorkout
                 print("\(workout.startDate)")
                 print("\(workout.duration)")
